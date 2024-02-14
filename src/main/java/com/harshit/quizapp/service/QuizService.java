@@ -5,6 +5,7 @@ import com.harshit.quizapp.dao.QuizDao;
 import com.harshit.quizapp.model.Question;
 import com.harshit.quizapp.model.QuestionWrapper;
 import com.harshit.quizapp.model.Quiz;
+import com.harshit.quizapp.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +55,15 @@ public class QuizService {
             questionsForUser.add(qw);
         }
         return new ResponseEntity<>(questionsForUser,HttpStatus.OK);
+    }
+
+    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+        Quiz quiz = quizDao.findById(id).get();
+        List<Question> questions = quiz.getQuestions();
+        int count=0;
+        for(int i=0;i<questions.size();i++){
+            if(questions.get(i).getRightAnswer().equals(responses.get(i).getResponse())) count++;
+        }
+        return new ResponseEntity<>(count,HttpStatus.OK);
     }
 }
